@@ -43,7 +43,18 @@ const App = () => {
     }
   };
 
-  const onUpdateAnswers = (answers: PossibleAnswers) => {};
+  const onUpdateAnswers = (answers: PossibleAnswers) => {
+    const newQuestions = questions.map((question, index) => {
+      if (index === stage) {
+        return {
+          ...question,
+          selectedAnswers: answers,
+        };
+      }
+      return question;
+    });
+    setQuestions(newQuestions);    
+  };
 
   console.log(stage);
   const currQuestion = QUESTIONNAIRE_NOT_STARTED && questions[stage];

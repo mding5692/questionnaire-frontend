@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
+import InputLabel from "@mui/material/InputLabel";
 
 import { PossibleAnswers } from "../../data/types";
 import { QUESTION_TYPES } from "../../data/constants";
@@ -19,15 +20,21 @@ interface Props {
 interface BooleanBtnProps {
   label: string;
   onClick: () => void;
+  selected: boolean;
 }
 
 const { TEXTBOX, BOOLEAN, DROPDOWN, CHECKBOX } = QUESTION_TYPES;
 
-const BooleanBtn = ({ label, onClick }: BooleanBtnProps) => (
-  <Button className="boolean_btn" variant="contained">
-    {label}
-  </Button>
-);
+const BooleanBtn = ({ label, onClick, selected }: BooleanBtnProps) =>
+  selected ? (
+    <Button onClick={onClick} color="success" variant="contained">
+      {label}
+    </Button>
+  ) : (
+    <Button onClick={onClick} variant="contained">
+      {label}
+    </Button>
+  );
 
 const Answers = ({
   questionType,
@@ -35,6 +42,21 @@ const Answers = ({
   userAnswers = [],
   onUpdateAnswers,
 }: Props) => {
+  const onCheckboxChange = (isPreviouslyChecked: boolean, answer: string) => {
+    if (typeof userAnswers === "boolean") {
+      return;
+    }
+    const newAnswers = isPreviouslyChecked
+      ? userAnswers.filter((a) => a !== answer)
+      : [...userAnswers, answer];
+    onUpdateAnswers(newAnswers);
+  };
+
+  const onSelectChange = (e: SelectChangeEvent) => {
+    const selectedAnswer = e?.target?.value ?? "";
+    onUpdateAnswers(selectedAnswer ? [selectedAnswer] : []);
+  };
+
   return (
     <div>
       {questionType === TEXTBOX && (
@@ -43,29 +65,64 @@ const Answers = ({
           label="Your answer here"
           multiline
           rows={4}
+          value={Array.isArray(userAnswers) ? userAnswers[0] : ""}
+          onChange={(e) => onUpdateAnswers([e.target.value])}
         />
       )}
       {questionType === BOOLEAN && (
         <>
-          <BooleanBtn label="True" onClick={() => onUpdateAnswers(true)} />
-          <BooleanBtn label="False" onClick={() => onUpdateAnswers(false)} />
+          <BooleanBtn
+            selected={userAnswers === true}
+            label="True"
+            onClick={() => onUpdateAnswers(true)}
+          />
+          <BooleanBtn
+            selected={userAnswers === false}
+            label="False"
+            onClick={() => onUpdateAnswers(false)}
+          />
         </>
       )}
       {questionType === DROPDOWN && (
-        <Select>
-          {answers.map((answer) => (
-            <MenuItem key={answer} value={answer}>
-              {answer}
-            </MenuItem>
-          ))}
-        </Select>
+        <>
+          <InputLabel id="demo-simple-select-label">
+            Choose the best answer that applies
+          </InputLabel>
+          <Select
+            value={
+              Array.isArray(userAnswers) && userAnswers.length
+                ? userAnswers[0]
+                : ""
+            }
+            onChange={onSelectChange}
+          >
+            {answers.map((answer) => (
+              <MenuItem key={answer} value={answer}>
+                {answer}
+              </MenuItem>
+            ))}
+          </Select>
+        </>
       )}
       {questionType === CHECKBOX && (
         <>
           <p>Select all that apply</p>
-          {answers.map((answer) => (
-            <FormControlLabel control={<Checkbox />} label={answer} />
-          ))}
+          {answers.map((answer) => {
+            let isChecked = false;
+            if (Array.isArray(userAnswers)) {
+              isChecked = userAnswers.includes(answer);
+            }
+            const FormCheckbox = () => (
+              <Checkbox
+                key={answer}
+                checked={isChecked}
+                onChange={() => onCheckboxChange(isChecked, answer)}
+              />
+            );
+            return (
+              <FormControlLabel control={<FormCheckbox />} label={answer} />
+            );
+          })}
         </>
       )}
     </div>
