@@ -1,0 +1,60 @@
+[
+  {
+    "questionType": "dropdown",
+    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
+    "answers": [
+      "Heart disease",
+      "Cancer",
+      "Stroke",
+      "Accidents",
+      "Chronic lower respiratory disease"
+    ],
+    "required": true
+  },
+  {
+    "questionType": "boolean",
+    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
+    "required": true
+  },
+  {
+    "questionType": "checkbox",
+    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
+    "answers": [
+      "Heart disease",
+      "Cancer",
+      "Stroke",
+      "Accidents",
+      "Chronic lower respiratory disease"
+    ],
+    "required": true
+  },
+  {
+    "questionType": "dropdown",
+    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
+    "answers": [
+      "Heart disease",
+      "Cancer",
+      "Stroke",
+      "Accidents",
+      "Chronic lower respiratory disease"
+    ],
+    "required": true
+  },
+  {
+    "questionType": "checkbox",
+    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
+    "answers": [
+      "Heart disease",
+      "Cancer",
+      "Stroke",
+      "Accidents",
+      "Chronic lower respiratory disease"
+    ],
+    "required": true
+  },
+  {
+    "questionType": "textbox",
+    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
+    "required": true
+  }
+]
