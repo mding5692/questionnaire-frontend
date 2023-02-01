@@ -1,13 +1,12 @@
 .app {
   text-align: center;
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #333;
 }
 
 .question {
@@ -18,5 +17,9 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 3em;
+}
+
+.boolean_btn {
   margin: 3em;
 }

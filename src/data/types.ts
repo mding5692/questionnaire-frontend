@@ -1,0 +1,1 @@
+export type PossibleAnswers = string[] | boolean;
