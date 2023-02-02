@@ -10,7 +10,11 @@ import data from "../data/questions.json";
 import { PossibleAnswers } from "../data/types";
 import "./App.css";
 
-const QUESTIONNAIRE_NOT_STARTED = -1;
+const QUESTIONNAIRE_STATE = {
+  NOT_STARTED: -1,
+  STARTED: 0,
+};
+const { NOT_STARTED, STARTED } = QUESTIONNAIRE_STATE;
 
 export interface Question {
   questionType: string;
@@ -20,44 +24,47 @@ export interface Question {
   selectedAnswers?: PossibleAnswers;
 }
 
-type Questions = Question[];
-
 const App = () => {
-  const [stage, setStage] = useState(QUESTIONNAIRE_NOT_STARTED);
-  const [questions, setQuestions] = useState<Questions>(data);
+  const [stage, setStage] = useState(NOT_STARTED);
+  const [questions, setQuestions] = useState<Question[]>(data);
   const [showErrorForRequired, setShowErrorForRequired] = useState(false);
 
-  const currQuestion = QUESTIONNAIRE_NOT_STARTED && questions[stage];
+  const startedQuestionnaire = stage >= STARTED;
+  const reachedEndOfQuestionnaire = stage === questions.length;
+  const currQuestion = startedQuestionnaire && questions[stage];
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("submitted");
   };
 
+  const onStartButtonClick = () => setStage(STARTED);
+
   const onNextButtonClick = () => {
-    if (currQuestion?.required && !currQuestion.selectedAnswers) {
-      setShowErrorForRequired(true);
-      return;
-    }
-    if (stage < questions.length) {
-      setShowErrorForRequired(false);
-      setStage(stage + 1);
+    if (currQuestion) {
+      const notFilledOutRequiredQuestion =
+        currQuestion.required &&
+        (currQuestion?.selectedAnswers === undefined ||
+          (Array.isArray(currQuestion.selectedAnswers) &&
+            !currQuestion.selectedAnswers?.length));
+      if (notFilledOutRequiredQuestion) {
+        setShowErrorForRequired(true);
+      } else if (stage < questions.length) {
+        setShowErrorForRequired(false);
+        setStage(stage + 1);
+      }
     }
   };
 
-  const onBackButtonClick = () => {
-    if (stage >= 0) {
-      setStage(stage - 1);
-    }
-  };
+  const onBackButtonClick = () => startedQuestionnaire && setStage(stage - 1);
 
-  const onUpdateAnswers = (answers: PossibleAnswers) => {
+  const onUpdateAnswers = (selectedAnswers: PossibleAnswers) => {
     setShowErrorForRequired(false);
     const newQuestions = questions.map((question, index) => {
       if (index === stage) {
         return {
           ...question,
-          selectedAnswers: answers,
+          selectedAnswers,
         };
       }
       return question;
@@ -65,47 +72,48 @@ const App = () => {
     setQuestions(newQuestions);
   };
 
-  console.log(stage);
-
   return (
     <div className="app">
-      <form onSubmit={onSubmit}>
-        <div className="question">
-          {!questions.length && <h1>Loading...</h1>}
-          {questions.length && stage < questions.length && (
-            <h3>
-              {stage === QUESTIONNAIRE_NOT_STARTED
-                ? "Welcome to our Questionnaire!"
-                : currQuestion.question}
-            </h3>
-          )}
-          {stage === QUESTIONNAIRE_NOT_STARTED && (
-            <Button onClick={onNextButtonClick}>Start</Button>
-          )}
-          {currQuestion?.required && (
-            <p className={showErrorForRequired ? "error_text" : ""}>
-              This is a mandatory question, you need to answer to move on.
-            </p>
-          )}
+      {stage === NOT_STARTED && (
+        <div>
+          <h1>
+            {questions.length ? "Welcome to our Questionnaire!" : "Loading..."}
+          </h1>
+          <Button onClick={onStartButtonClick}>Start</Button>
         </div>
-        {stage >= 0 && stage < questions.length && (
-          <Answers
-            questionType={currQuestion.questionType}
-            answers={currQuestion.answers}
-            onUpdateAnswers={onUpdateAnswers}
-            userAnswers={currQuestion.selectedAnswers}
-          />
-        )}
-        {stage === questions.length && <Button type="submit">Submit</Button>}
-        {stage >= 0 && (
-          <div className="action_btns">
-            <Button onClick={onBackButtonClick}>Back</Button>
-            {stage < questions.length && (
-              <Button onClick={onNextButtonClick}>Next</Button>
-            )}
-          </div>
-        )}
-      </form>
+      )}
+      {startedQuestionnaire && (
+        <form onSubmit={onSubmit}>
+          {currQuestion && (
+            <>
+              <div className="question">
+                <h3>{currQuestion.question}</h3>
+                {currQuestion.required && (
+                  <p className={showErrorForRequired ? "error_text" : ""}>
+                    This is a mandatory question, you need to answer to move on.
+                  </p>
+                )}
+              </div>
+              {reachedEndOfQuestionnaire ? (
+                <Button type="submit">Submit</Button>
+              ) : (
+                <Answers
+                  questionType={currQuestion.questionType}
+                  answers={currQuestion.answers}
+                  onUpdateAnswers={onUpdateAnswers}
+                  userAnswers={currQuestion.selectedAnswers}
+                />
+              )}
+              <div className="action_btns">
+                <Button onClick={onBackButtonClick}>Back</Button>
+                {!reachedEndOfQuestionnaire && (
+                  <Button onClick={onNextButtonClick}>Next</Button>
+                )}
+              </div>
+            </>
+          )}
+        </form>
+      )}
     </div>
   );
 };

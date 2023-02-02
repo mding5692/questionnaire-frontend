@@ -25,16 +25,15 @@ interface BooleanBtnProps {
 
 const { TEXTBOX, BOOLEAN, DROPDOWN, CHECKBOX } = QUESTION_TYPES;
 
-const BooleanBtn = ({ label, onClick, selected }: BooleanBtnProps) =>
-  selected ? (
-    <Button onClick={onClick} color="success" variant="contained">
-      {label}
-    </Button>
-  ) : (
-    <Button onClick={onClick} variant="contained">
-      {label}
-    </Button>
-  );
+const BooleanBtn = ({ label, onClick, selected }: BooleanBtnProps) => (
+  <Button
+    onClick={onClick}
+    color={selected ? "success" : "primary"}
+    variant="contained"
+  >
+    {label}
+  </Button>
+);
 
 const Answers = ({
   questionType,
@@ -46,6 +45,7 @@ const Answers = ({
     if (typeof userAnswers === "boolean") {
       return;
     }
+    console.log(userAnswers);
     const newAnswers = isPreviouslyChecked
       ? userAnswers.filter((a) => a !== answer)
       : [...userAnswers, answer];
@@ -114,13 +114,16 @@ const Answers = ({
             }
             const FormCheckbox = () => (
               <Checkbox
-                key={answer}
                 checked={isChecked}
                 onChange={() => onCheckboxChange(isChecked, answer)}
               />
             );
             return (
-              <FormControlLabel control={<FormCheckbox />} label={answer} />
+              <FormControlLabel
+                key={answer}
+                control={<FormCheckbox />}
+                label={answer}
+              />
             );
           })}
         </>
