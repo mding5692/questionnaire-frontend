@@ -66,7 +66,7 @@ const Answers = ({
           multiline
           rows={4}
           value={Array.isArray(userAnswers) ? userAnswers[0] : ""}
-          onChange={(e) => onUpdateAnswers([e.target.value])}
+          onChange={(e) => onUpdateAnswers(e.target.value? [e.target.value]: [])}
         />
       )}
       {questionType === BOOLEAN && (

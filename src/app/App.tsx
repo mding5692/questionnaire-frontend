@@ -17,11 +17,6 @@ const QUESTIONNAIRE_STATE = {
   STARTED: 0,
 };
 const { NOT_STARTED, STARTED } = QUESTIONNAIRE_STATE;
-const QUESTIONNAIRE_SUBMIT_STATE = {
-  SUBMIT_SUCCESS: "SUBMIT_SUCCESS",
-  SUBMIT_ERROR: "SUBMIT_ERROR",
-};
-const { SUBMIT_SUCCESS, SUBMIT_ERROR } = QUESTIONNAIRE_SUBMIT_STATE;
 
 export interface Question {
   id: number;
@@ -64,18 +59,17 @@ const App = () => {
   const onStartButtonClick = () => setStage(STARTED);
 
   const onNextButtonClick = () => {
-    if (currQuestion) {
-      const notFilledOutRequiredQuestion =
-        currQuestion.required &&
-        (currQuestion?.selectedAnswers === undefined ||
-          (Array.isArray(currQuestion.selectedAnswers) &&
-            !currQuestion.selectedAnswers?.length));
-      if (notFilledOutRequiredQuestion) {
-        setShowErrorForRequired(true);
-      } else if (stage < questions.length) {
-        setShowErrorForRequired(false);
-        setStage(stage + 1);
-      }
+    const notFilledOutRequiredQuestion =
+      currQuestion &&
+      currQuestion.required &&
+      (currQuestion?.selectedAnswers === undefined ||
+        (Array.isArray(currQuestion.selectedAnswers) &&
+          !currQuestion.selectedAnswers.length));
+    if (notFilledOutRequiredQuestion) {
+      setShowErrorForRequired(true);
+    } else if (stage < questions.length) {
+      setShowErrorForRequired(false);
+      setStage(stage + 1);
     }
   };
 
