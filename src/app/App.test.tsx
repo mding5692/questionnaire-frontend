@@ -572,7 +572,7 @@ describe("Questionnaire App Frontend", () => {
     expect(endingMsg).toBeInTheDocument();
   });
 
-  it("should be able to submit and also see an error modal as not hooked up to backend api", async () => {
+  it("should be able to submit and also see a submission result modal", async () => {
     render(<App />);
     const startButton = screen.getByRole("button", { name: /start/i });
 
@@ -621,6 +621,7 @@ describe("Questionnaire App Frontend", () => {
     act(() => {
       fireEvent.click(submitButton);
     });
-    
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog).toBeInTheDocument();
   });
 });
