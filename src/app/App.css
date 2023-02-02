@@ -23,3 +23,7 @@
 .boolean_btn {
   margin: 3em;
 }
+
+.error_text {
+  color: red;
+}

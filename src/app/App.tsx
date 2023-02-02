@@ -25,6 +25,9 @@ type Questions = Question[];
 const App = () => {
   const [stage, setStage] = useState(QUESTIONNAIRE_NOT_STARTED);
   const [questions, setQuestions] = useState<Questions>(data);
+  const [showErrorForRequired, setShowErrorForRequired] = useState(false);
+
+  const currQuestion = QUESTIONNAIRE_NOT_STARTED && questions[stage];
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +35,12 @@ const App = () => {
   };
 
   const onNextButtonClick = () => {
+    if (currQuestion?.required && !currQuestion.selectedAnswers) {
+      setShowErrorForRequired(true);
+      return;
+    }
     if (stage < questions.length) {
+      setShowErrorForRequired(false);
       setStage(stage + 1);
     }
   };
@@ -44,6 +52,7 @@ const App = () => {
   };
 
   const onUpdateAnswers = (answers: PossibleAnswers) => {
+    setShowErrorForRequired(false);
     const newQuestions = questions.map((question, index) => {
       if (index === stage) {
         return {
@@ -53,11 +62,10 @@ const App = () => {
       }
       return question;
     });
-    setQuestions(newQuestions);    
+    setQuestions(newQuestions);
   };
 
   console.log(stage);
-  const currQuestion = QUESTIONNAIRE_NOT_STARTED && questions[stage];
 
   return (
     <div className="app">
@@ -75,7 +83,9 @@ const App = () => {
             <Button onClick={onNextButtonClick}>Start</Button>
           )}
           {currQuestion?.required && (
-            <p>This is a mandatory question, you need to answer to move on.</p>
+            <p className={showErrorForRequired ? "error_text" : ""}>
+              This is a mandatory question, you need to answer to move on.
+            </p>
           )}
         </div>
         {stage >= 0 && stage < questions.length && (
