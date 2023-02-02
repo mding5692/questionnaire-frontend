@@ -50,15 +50,21 @@ const Answers = ({
           label="Your answer here"
           multiline
           rows={4}
-          value={userAnswers.length ? userAnswers[0] : ""}
+          value={Array.isArray(userAnswers) ? userAnswers[0] : ""}
           onChange={onTextChange}
         />
       )}
       {questionType === DROPDOWN && (
         <>
-          <InputLabel>Choose the best answer that applies</InputLabel>
+          <InputLabel id="demo-simple-select-label">
+            Choose the best answer that applies
+          </InputLabel>
           <Select
-            value={userAnswers.length ? userAnswers[0] : ""}
+            value={
+              Array.isArray(userAnswers) && userAnswers.length
+                ? userAnswers[0]
+                : ""
+            }
             onChange={onSelectChange}
           >
             {answers.map((answer) => (
