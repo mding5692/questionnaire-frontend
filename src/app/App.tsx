@@ -1,10 +1,10 @@
 import React, { useState, FormEvent } from "react";
 import Button from "@mui/material/Button";
+import axios from "axios";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import axios from "axios";
 
 import Answers from "../components/Answers/Answers";
 import data from "../data/questions.json";
@@ -40,12 +40,11 @@ const App = () => {
     e.preventDefault();
     try {
       const answers = questions.map(
-        ({ id, questionType, question, selectedAnswers }) => {
-          const defaultAnswers = questionType === "boolean" ? false : [];
+        ({ id, question, selectedAnswers }) => {
           return {
             id,
             question,
-            selectedAnswers: selectedAnswers ?? defaultAnswers,
+            selectedAnswers: selectedAnswers ?? [],
           };
         }
       );

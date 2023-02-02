@@ -10,7 +10,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { PossibleAnswers } from "../../data/types";
 import { QUESTION_TYPES } from "../../data/constants";
 
-interface Props {
+export interface Props {
   questionType: string;
   answers?: string[];
   userAnswers?: PossibleAnswers;
@@ -23,17 +23,7 @@ interface BooleanBtnProps {
   selected: boolean;
 }
 
-const { TEXTBOX, BOOLEAN, DROPDOWN, CHECKBOX } = QUESTION_TYPES;
-
-const BooleanBtn = ({ label, onClick, selected }: BooleanBtnProps) => (
-  <Button
-    onClick={onClick}
-    color={selected ? "success" : "primary"}
-    variant="contained"
-  >
-    {label}
-  </Button>
-);
+const { TEXTBOX, DROPDOWN, CHECKBOX } = QUESTION_TYPES;
 
 const Answers = ({
   questionType,
@@ -42,10 +32,6 @@ const Answers = ({
   onUpdateAnswers,
 }: Props) => {
   const onCheckboxChange = (isPreviouslyChecked: boolean, answer: string) => {
-    if (typeof userAnswers === "boolean") {
-      return;
-    }
-    console.log(userAnswers);
     const newAnswers = isPreviouslyChecked
       ? userAnswers.filter((a) => a !== answer)
       : [...userAnswers, answer];
@@ -68,20 +54,6 @@ const Answers = ({
           value={Array.isArray(userAnswers) ? userAnswers[0] : ""}
           onChange={(e) => onUpdateAnswers(e.target.value? [e.target.value]: [])}
         />
-      )}
-      {questionType === BOOLEAN && (
-        <>
-          <BooleanBtn
-            selected={userAnswers === true}
-            label="True"
-            onClick={() => onUpdateAnswers(true)}
-          />
-          <BooleanBtn
-            selected={userAnswers === false}
-            label="False"
-            onClick={() => onUpdateAnswers(false)}
-          />
-        </>
       )}
       {questionType === DROPDOWN && (
         <>

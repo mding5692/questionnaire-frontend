@@ -13,18 +13,6 @@
     "required": true
   },
   {
-    "questionType": "boolean",
-    "id": 2,
-    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
-    "required": false
-  },
-  {
-    "questionType": "boolean",
-    "id": 3,
-    "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",
-    "required": true
-  },
-  {
     "questionType": "checkbox",
     "id": 4,
     "question": "The following is a list of the 5 most common causes of death in the United States. Which of the following is NOT one of the 5 most common causes of death in the United States?",

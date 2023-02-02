@@ -1,1 +1,1 @@
-export type PossibleAnswers = string[] | boolean;
+export type PossibleAnswers = string[];
