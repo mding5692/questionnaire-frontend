@@ -4,9 +4,11 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import axios from "axios";
 
 import Answers from "../components/Answers/Answers";
 import data from "../data/questions.json";
+import { API_ENDPOINT } from "../constants";
 import { PossibleAnswers } from "../data/types";
 import "./App.css";
 
@@ -15,8 +17,14 @@ const QUESTIONNAIRE_STATE = {
   STARTED: 0,
 };
 const { NOT_STARTED, STARTED } = QUESTIONNAIRE_STATE;
+const QUESTIONNAIRE_SUBMIT_STATE = {
+  SUBMIT_SUCCESS: "SUBMIT_SUCCESS",
+  SUBMIT_ERROR: "SUBMIT_ERROR",
+};
+const { SUBMIT_SUCCESS, SUBMIT_ERROR } = QUESTIONNAIRE_SUBMIT_STATE;
 
 export interface Question {
+  id: number;
   questionType: string;
   required: boolean;
   question: string;
@@ -33,9 +41,24 @@ const App = () => {
   const reachedEndOfQuestionnaire = stage === questions.length;
   const currQuestion = startedQuestionnaire && questions[stage];
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submitted");
+    try {
+      const answers = questions.map(
+        ({ id, questionType, question, selectedAnswers }) => {
+          const defaultAnswers = questionType === "boolean" ? false : [];
+          return {
+            id,
+            question,
+            selectedAnswers: selectedAnswers ?? defaultAnswers,
+          };
+        }
+      );
+      await axios.post(`${API_ENDPOINT}/answers`, { answers });
+      alert("Submit Success! Thank you for your answers!");
+    } catch (err) {
+      alert("There was an error submitting your answers. Please try again.");
+    }
   };
 
   const onStartButtonClick = () => setStage(STARTED);
@@ -86,7 +109,7 @@ const App = () => {
         <form onSubmit={onSubmit}>
           {currQuestion && (
             <>
-              <div className="question">
+              <div className="container">
                 <h3>{currQuestion.question}</h3>
                 {currQuestion.required && (
                   <p className={showErrorForRequired ? "error_text" : ""}>
@@ -94,24 +117,29 @@ const App = () => {
                   </p>
                 )}
               </div>
-              {reachedEndOfQuestionnaire ? (
-                <Button type="submit">Submit</Button>
-              ) : (
-                <Answers
-                  questionType={currQuestion.questionType}
-                  answers={currQuestion.answers}
-                  onUpdateAnswers={onUpdateAnswers}
-                  userAnswers={currQuestion.selectedAnswers}
-                />
-              )}
-              <div className="action_btns">
-                <Button onClick={onBackButtonClick}>Back</Button>
-                {!reachedEndOfQuestionnaire && (
-                  <Button onClick={onNextButtonClick}>Next</Button>
-                )}
-              </div>
+              <Answers
+                questionType={currQuestion.questionType}
+                answers={currQuestion.answers}
+                onUpdateAnswers={onUpdateAnswers}
+                userAnswers={currQuestion.selectedAnswers}
+              />
             </>
           )}
+          {reachedEndOfQuestionnaire && (
+            <div className="container">
+              <h3>
+                Thank you for filling out this questionnaire, please confirm
+                your answers before submitting
+              </h3>
+              <Button type="submit">Submit</Button>
+            </div>
+          )}
+          <div className="action_btns">
+            <Button onClick={onBackButtonClick}>Back</Button>
+            {!reachedEndOfQuestionnaire && (
+              <Button onClick={onNextButtonClick}>Next</Button>
+            )}
+          </div>
         </form>
       )}
     </div>
