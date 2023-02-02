@@ -1,42 +1,146 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from "react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 
-import Answers, { Props } from './Answers';
-import { PossibleAnswers } from '../../data/types';
-import { QUESTION_TYPES } from '../../data/constants';
+import Answers, { Props } from "./Answers";
+import { PossibleAnswers } from "../../data/types";
+import { QUESTION_TYPES } from "../../data/constants";
 
-const multipleStringAnswers = ['answer1', 'answer2', 'answer3']
+const multipleStringAnswers = ["answer1", "answer2", "answer3"];
 
 const defaultProps: Props = {
-    questionType: QUESTION_TYPES.TEXTBOX,
-    onUpdateAnswers: (answers: PossibleAnswers) => {},
+  questionType: QUESTION_TYPES.TEXTBOX,
+  onUpdateAnswers: (answers: PossibleAnswers) => {},
 };
 
-test('renders TEXTBOX answers component', () => {
+describe("answers component", () => {
+  it("renders TEXTBOX answers component", () => {
     render(<Answers {...defaultProps} questionType={QUESTION_TYPES.TEXTBOX} />);
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('');
-});
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveValue("");
+  });
 
-test('can fill in TEXTBOX answers component', () => {
+  it("can fill in TEXTBOX answers component", () => {
     render(<Answers {...defaultProps} questionType={QUESTION_TYPES.TEXTBOX} />);
-    const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: 'test' } });
-    expect(input).toHaveValue('test');
-});
+    const input = screen.getByRole("textbox");
+    fireEvent.change(input, { target: { value: "test" } });
+    expect(input).toHaveValue("test");
+  });
 
-test('can fill in and empty TEXTBOX answers component', () => {
+  it("can fill in and empty TEXTBOX answers component", () => {
     render(<Answers {...defaultProps} questionType={QUESTION_TYPES.TEXTBOX} />);
-    const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: 'test' } });
-    fireEvent.change(input, { target: { value: '' } });
-    expect(input).toHaveValue('');
-});
+    const input = screen.getByRole("textbox");
+    fireEvent.change(input, { target: { value: "test" } });
+    fireEvent.change(input, { target: { value: "" } });
+    expect(input).toHaveValue("");
+  });
 
-test('renders DROPDOWN answers component with multiple string answers', () => {
-    render(<Answers {...defaultProps} questionType={QUESTION_TYPES.DROPDOWN} answers={multipleStringAnswers} />);
-});
+  it("renders DROPDOWN answers component with multiple string answers", () => {
+    render(
+      <Answers
+        {...defaultProps}
+        questionType={QUESTION_TYPES.DROPDOWN}
+        answers={multipleStringAnswers}
+      />
+    );
+    const dropdown = screen.getByRole("button");
+    expect(dropdown).toHaveClass("MuiSelect-select");
+  });
 
-test('renders CHECKBOX answers component with multiple choice answers', () => {
-    render(<Answers {...defaultProps} questionType={QUESTION_TYPES.CHECKBOX} answers={multipleStringAnswers} />);
+  it("able to open up DROPDOWN answers component with multiple string answers and see answers", () => {
+    render(
+      <Answers
+        {...defaultProps}
+        questionType={QUESTION_TYPES.DROPDOWN}
+        answers={multipleStringAnswers}
+      />
+    );
+    const dropdown = screen.getByRole("button");
+    expect(dropdown).toHaveClass("MuiSelect-select");
+    fireEvent.mouseDown(dropdown);
+    const options = screen.getAllByRole("option");
+    const optionValues = options.map((li) => li.getAttribute("data-value"));
+    expect(optionValues).toEqual(multipleStringAnswers);
+  });
+
+//   it("select from DROPDOWN answers component with multiple string answers", () => {
+//     render(
+//       <Answers
+//         {...defaultProps}
+//         questionType={QUESTION_TYPES.DROPDOWN}
+//         answers={multipleStringAnswers}
+//       />
+//     );
+//     const dropdown = screen.getByRole("button");
+//     expect(dropdown).toHaveClass("MuiSelect-select");
+//     fireEvent.mouseDown(dropdown);
+//     const options = screen.getAllByRole("option");
+//     const optionValues = options.map((li) => li.getAttribute("data-value"));
+//     expect(optionValues).toEqual(multipleStringAnswers);
+//     fireEvent.mouseDown(options[0]);
+//     fireEvent.click(options[0]);
+//     expect(dropdown).toHaveTextContent("answer1");
+//   });
+
+  it("display previously selected answer in DROPDOWN answers component with multiple string answers", () => {
+    render(
+      <Answers
+        {...defaultProps}
+        questionType={QUESTION_TYPES.DROPDOWN}
+        answers={multipleStringAnswers}
+        userAnswers={["answer1"]}
+      />
+    );
+    const dropdown = screen.getByRole("button");
+    expect(dropdown).toHaveClass("MuiSelect-select");
+    expect(dropdown).toHaveTextContent("answer1");
+  });
+
+  it("renders unchecked CHECKBOX answers component with multiple choice answers", () => {
+    render(
+      <Answers
+        {...defaultProps}
+        questionType={QUESTION_TYPES.CHECKBOX}
+        answers={multipleStringAnswers}
+      />
+    );
+    const checkboxes = screen.getAllByRole("checkbox");
+    expect(checkboxes[0]).not.toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).not.toBeChecked();
+  });
+
+  it("renders select answers in CHECKBOX answers component with multiple choice answers", () => {
+    const { getByLabelText } =render(
+      <Answers
+        {...defaultProps}
+        questionType={QUESTION_TYPES.CHECKBOX}
+        answers={multipleStringAnswers}
+      />
+    );
+    const checkboxes = screen.getAllByRole("checkbox");
+    expect(checkboxes[0]).not.toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).not.toBeChecked();
+    const checkbox1 = getByLabelText("answer1");
+    console.log(checkbox1)
+    // fireEvent.mouseDown(checkboxes[0]);
+    fireEvent.click(checkbox1);
+    expect(checkboxes[0]).toBeChecked();
+    // console.log(checkboxes)
+  });
+
+  it("displays previously selected answers in CHECKBOX answers component with multiple choice answers", () => {
+    render(
+      <Answers
+        {...defaultProps}
+        questionType={QUESTION_TYPES.CHECKBOX}
+        answers={multipleStringAnswers}
+        userAnswers={["answer1", "answer2"]}
+      />
+    );
+    const checkboxes = screen.getAllByRole("checkbox");
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).toBeChecked();
+    expect(checkboxes[2]).not.toBeChecked();
+  });
 });

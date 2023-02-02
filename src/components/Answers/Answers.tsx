@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "@mui/material/Button";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -15,12 +14,6 @@ export interface Props {
   answers?: string[];
   userAnswers?: PossibleAnswers;
   onUpdateAnswers: (answers: PossibleAnswers) => void;
-}
-
-interface BooleanBtnProps {
-  label: string;
-  onClick: () => void;
-  selected: boolean;
 }
 
 const { TEXTBOX, DROPDOWN, CHECKBOX } = QUESTION_TYPES;
@@ -43,6 +36,12 @@ const Answers = ({
     onUpdateAnswers(selectedAnswer ? [selectedAnswer] : []);
   };
 
+  const onTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let textAnswer = e?.target?.value ?? "";
+    textAnswer = textAnswer.trim();
+    onUpdateAnswers(textAnswer ? [textAnswer] : []);
+  };
+
   return (
     <div>
       {questionType === TEXTBOX && (
@@ -52,7 +51,7 @@ const Answers = ({
           multiline
           rows={4}
           value={Array.isArray(userAnswers) ? userAnswers[0] : ""}
-          onChange={(e) => onUpdateAnswers(e.target.value? [e.target.value]: [])}
+          onChange={onTextChange}
         />
       )}
       {questionType === DROPDOWN && (
