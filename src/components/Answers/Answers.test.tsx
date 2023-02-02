@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 
 import Answers, { Props } from "./Answers";
 import { PossibleAnswers } from "../../data/types";
@@ -62,26 +62,6 @@ describe("answers component", () => {
     expect(optionValues).toEqual(multipleStringAnswers);
   });
 
-//   it("select from DROPDOWN answers component with multiple string answers", () => {
-//     render(
-//       <Answers
-//         {...defaultProps}
-//         questionType={QUESTION_TYPES.DROPDOWN}
-//         answers={multipleStringAnswers}
-//       />
-//     );
-//     const dropdown = screen.getByRole("button");
-//     expect(dropdown).toHaveClass("MuiSelect-select");
-//     fireEvent.mouseDown(dropdown);
-//     const options = screen.getAllByRole("option");
-//     const optionValues = options.map((li) => li.getAttribute("data-value"));
-//     expect(optionValues).toEqual(multipleStringAnswers);
-//     fireEvent.mouseDown(options[0]);
-//     fireEvent.click(options[0]);
-//     console.log(dropdown.textContent)
-//     expect(dropdown).toHaveTextContent("answer1");
-//   });
-
   it("display previously selected answer in DROPDOWN answers component with multiple string answers", () => {
     render(
       <Answers
@@ -109,29 +89,6 @@ describe("answers component", () => {
     expect(checkboxes[1]).not.toBeChecked();
     expect(checkboxes[2]).not.toBeChecked();
   });
-
-//   it("renders selected answers in CHECKBOX answers component with multiple choice answers", () => {
-//     const { getByLabelText } = render(
-//       <Answers
-//         {...defaultProps}
-//         questionType={QUESTION_TYPES.CHECKBOX}
-//         answers={multipleStringAnswers}
-//       />
-//     );
-//     const checkboxes = screen.getAllByRole("checkbox");
-//     expect(checkboxes[0]).not.toBeChecked();
-//     expect(checkboxes[1]).not.toBeChecked();
-//     expect(checkboxes[2]).not.toBeChecked();
-//     const checkbox1 = getByLabelText("answer1");
-//     console.log(checkbox1.parentElement as HTMLElement)
-//     fireEvent.mouseDown(checkboxes[0]);
-//     fireEvent.click(checkboxes[0]);
-//     fireEvent.click(checkbox1);
-//     checkboxes[0].click();
-//     checkbox1.click()
-//     expect(checkboxes[0]).toBeChecked();
-//     // console.log(checkboxes)
-//   });
 
   it("displays previously selected answers in CHECKBOX answers component with multiple choice answers", () => {
     render(

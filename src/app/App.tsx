@@ -29,6 +29,7 @@ export interface Question {
 
 const App = () => {
   const [stage, setStage] = useState(NOT_STARTED);
+  const [showModal, setShowModal] = useState(false);
   const [questions, setQuestions] = useState<Question[]>(data);
   const [showErrorForRequired, setShowErrorForRequired] = useState(false);
 
@@ -49,7 +50,7 @@ const App = () => {
         }
       );
       await axios.post(`${API_ENDPOINT}/answers`, { answers });
-      alert("Submit Success! Thank you for your answers!");
+      setShowModal(true);
     } catch (err) {
       alert("There was an error submitting your answers. Please try again.");
     }
