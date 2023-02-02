@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from "react";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import axios from "axios";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -27,9 +28,17 @@ export interface Question {
   selectedAnswers?: PossibleAnswers;
 }
 
+export interface SubmissionModalState {
+  open: boolean;
+  isError: boolean;
+}
+
 const App = () => {
   const [stage, setStage] = useState(NOT_STARTED);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalState, setShowModalState] = useState<SubmissionModalState>({
+    open: false,
+    isError: false,
+  });
   const [questions, setQuestions] = useState<Question[]>(data);
   const [showErrorForRequired, setShowErrorForRequired] = useState(false);
 
@@ -40,19 +49,24 @@ const App = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const answers = questions.map(
-        ({ id, question, selectedAnswers }) => {
-          return {
-            id,
-            question,
-            selectedAnswers: selectedAnswers ?? [],
-          };
-        }
-      );
+      const answers = questions.map(({ id, question, selectedAnswers }) => {
+        return {
+          id,
+          question,
+          selectedAnswers: selectedAnswers ?? [],
+        };
+      });
       await axios.post(`${API_ENDPOINT}/answers`, { answers });
-      setShowModal(true);
+      setShowModalState({
+        open: true,
+        isError: false,
+      });
     } catch (err) {
-      alert("There was an error submitting your answers. Please try again.");
+      console.error(err);
+      setShowModalState({
+        open: true,
+        isError: true,
+      });
     }
   };
 
@@ -89,6 +103,27 @@ const App = () => {
     setQuestions(newQuestions);
   };
 
+  const SubmissionModal = ({ open, isError }: SubmissionModalState) => (
+    <Dialog
+      open={open}
+      onClose={() => setShowModalState({ open: false, isError: false })}
+    >
+      <div className="submission_modal">
+        {isError ? (
+          <>
+            <h2 className="error_text">ERROR</h2>
+            <p>There was an error submitting, please try again!</p>
+          </>
+        ) : (
+          <>
+            <h2 className="success_text">SUCCESS</h2>
+            <p>Your form was submitted successfully!</p>
+          </>
+        )}
+      </div>
+    </Dialog>
+  );
+
   return (
     <div className="app">
       {stage === NOT_STARTED && (
@@ -100,41 +135,45 @@ const App = () => {
         </div>
       )}
       {startedQuestionnaire && (
-        <form onSubmit={onSubmit}>
-          {currQuestion && (
-            <>
-              <div className="container">
-                <h3>{currQuestion.question}</h3>
-                {currQuestion.required && (
-                  <p className={showErrorForRequired ? "error_text" : ""}>
-                    This is a mandatory question, you need to answer to move on.
-                  </p>
-                )}
-              </div>
-              <Answers
-                questionType={currQuestion.questionType}
-                answers={currQuestion.answers}
-                onUpdateAnswers={onUpdateAnswers}
-                userAnswers={currQuestion.selectedAnswers}
-              />
-            </>
-          )}
-          {reachedEndOfQuestionnaire && (
-            <div className="container">
-              <h3>
-                Thank you for filling out this questionnaire, please confirm
-                your answers before submitting
-              </h3>
-              <Button type="submit">Submit</Button>
-            </div>
-          )}
-          <div className="action_btns">
-            <Button onClick={onBackButtonClick}>Back</Button>
-            {!reachedEndOfQuestionnaire && (
-              <Button onClick={onNextButtonClick}>Next</Button>
+        <>
+          <form onSubmit={onSubmit}>
+            {currQuestion && (
+              <>
+                <div className="container">
+                  <h3>{currQuestion.question}</h3>
+                  {currQuestion.required && (
+                    <p className={showErrorForRequired ? "error_text" : ""}>
+                      This is a mandatory question, you need to answer to move
+                      on.
+                    </p>
+                  )}
+                </div>
+                <Answers
+                  questionType={currQuestion.questionType}
+                  answers={currQuestion.answers}
+                  onUpdateAnswers={onUpdateAnswers}
+                  userAnswers={currQuestion.selectedAnswers}
+                />
+              </>
             )}
-          </div>
-        </form>
+            {reachedEndOfQuestionnaire && (
+              <div className="container">
+                <h3>
+                  Thank you for filling out this questionnaire, please confirm
+                  your answers before submitting
+                </h3>
+                <Button type="submit">Submit</Button>
+              </div>
+            )}
+            <div className="action_btns">
+              <Button onClick={onBackButtonClick}>Back</Button>
+              {!reachedEndOfQuestionnaire && (
+                <Button onClick={onNextButtonClick}>Next</Button>
+              )}
+            </div>
+          </form>
+          <SubmissionModal {...showModalState} />
+        </>
       )}
     </div>
   );

@@ -27,3 +27,12 @@
 .error_text {
   color: red;
 }
+
+.success_text {
+  color: green;
+}
+
+.submission_modal {
+  text-align: center;
+  margin: 3em;
+}
