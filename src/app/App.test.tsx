@@ -1,7 +1,15 @@
 import React from 'react';
+import * as axios from 'axios';
 import { render, screen } from '@testing-library/react';
+
 import App from './App';
 
-test('renders home page', () => {
-  render(<App />);
-});
+jest.mock('axios');
+
+describe('Questionnaire App Frontend', () => {
+  test('renders home page', () => {
+    render(<App />);
+  });
+  
+
+})

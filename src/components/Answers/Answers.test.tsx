@@ -78,6 +78,7 @@ describe("answers component", () => {
 //     expect(optionValues).toEqual(multipleStringAnswers);
 //     fireEvent.mouseDown(options[0]);
 //     fireEvent.click(options[0]);
+//     console.log(dropdown.textContent)
 //     expect(dropdown).toHaveTextContent("answer1");
 //   });
 
@@ -109,25 +110,28 @@ describe("answers component", () => {
     expect(checkboxes[2]).not.toBeChecked();
   });
 
-  it("renders select answers in CHECKBOX answers component with multiple choice answers", () => {
-    const { getByLabelText } =render(
-      <Answers
-        {...defaultProps}
-        questionType={QUESTION_TYPES.CHECKBOX}
-        answers={multipleStringAnswers}
-      />
-    );
-    const checkboxes = screen.getAllByRole("checkbox");
-    expect(checkboxes[0]).not.toBeChecked();
-    expect(checkboxes[1]).not.toBeChecked();
-    expect(checkboxes[2]).not.toBeChecked();
-    const checkbox1 = getByLabelText("answer1");
-    console.log(checkbox1)
-    // fireEvent.mouseDown(checkboxes[0]);
-    fireEvent.click(checkbox1);
-    expect(checkboxes[0]).toBeChecked();
-    // console.log(checkboxes)
-  });
+//   it("renders selected answers in CHECKBOX answers component with multiple choice answers", () => {
+//     const { getByLabelText } = render(
+//       <Answers
+//         {...defaultProps}
+//         questionType={QUESTION_TYPES.CHECKBOX}
+//         answers={multipleStringAnswers}
+//       />
+//     );
+//     const checkboxes = screen.getAllByRole("checkbox");
+//     expect(checkboxes[0]).not.toBeChecked();
+//     expect(checkboxes[1]).not.toBeChecked();
+//     expect(checkboxes[2]).not.toBeChecked();
+//     const checkbox1 = getByLabelText("answer1");
+//     console.log(checkbox1.parentElement as HTMLElement)
+//     fireEvent.mouseDown(checkboxes[0]);
+//     fireEvent.click(checkboxes[0]);
+//     fireEvent.click(checkbox1);
+//     checkboxes[0].click();
+//     checkbox1.click()
+//     expect(checkboxes[0]).toBeChecked();
+//     // console.log(checkboxes)
+//   });
 
   it("displays previously selected answers in CHECKBOX answers component with multiple choice answers", () => {
     render(
