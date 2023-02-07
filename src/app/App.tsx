@@ -1,6 +1,5 @@
 import React, { useState, FormEvent } from "react";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
 import axios from "axios";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -9,6 +8,7 @@ import "@fontsource/roboto/700.css";
 
 import Answers from "../components/Answers/Answers";
 import data from "../data/questions.json";
+import { SubmissionModalState, SubmissionModal } from "../components/SubmissionModal/SubmissionModal";
 import { API_ENDPOINT } from "../constants";
 import { PossibleAnswers } from "../data/types";
 import "./App.css";
@@ -26,11 +26,6 @@ export interface Question {
   question: string;
   answers?: string[];
   selectedAnswers?: PossibleAnswers;
-}
-
-export interface SubmissionModalState {
-  open: boolean;
-  isError: boolean;
 }
 
 const App = () => {
@@ -103,27 +98,6 @@ const App = () => {
     setQuestions(newQuestions);
   };
 
-  const SubmissionModal = ({ open, isError }: SubmissionModalState) => (
-    <Dialog
-      open={open}
-      onClose={() => setShowModalState({ open: false, isError: false })}
-    >
-      <div className="submission_modal">
-        {isError ? (
-          <>
-            <h2 className="error_text">ERROR</h2>
-            <p>There was an error submitting, please try again!</p>
-          </>
-        ) : (
-          <>
-            <h2 className="success_text">SUCCESS</h2>
-            <p>Your form was submitted successfully!</p>
-          </>
-        )}
-      </div>
-    </Dialog>
-  );
-
   return (
     <div className="app">
       {stage === NOT_STARTED && (
@@ -172,7 +146,7 @@ const App = () => {
               )}
             </div>
           </form>
-          <SubmissionModal {...showModalState} />
+          <SubmissionModal {...showModalState} setShowModalState={setShowModalState}/>
         </>
       )}
     </div>
