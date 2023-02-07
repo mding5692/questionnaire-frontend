@@ -25,28 +25,28 @@ describe("Questionnaire App Frontend", () => {
     render(<App />);
     const startButton = screen.getByRole("button", { name: /start/i });
     const welcomeMsg = screen.getByText(WELCOME_MSG);
-    expect(startButton).toBeInTheDocument();
-    expect(welcomeMsg).toBeInTheDocument();
+    expect(startButton).toBeVisible();
+    expect(welcomeMsg).toBeVisible();
   });
 
   it("starts questionnaire when press start button", async () => {
     render(<App />);
     const startButton = screen.getByRole("button", { name: /start/i });
-    expect(startButton).toBeInTheDocument();
+    expect(startButton).toBeVisible();
     act(() => {
       fireEvent.click(startButton);
     });
     const question = await screen.findByText(QUESTION_ONE);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
     const nextButton = screen.getByRole("button", { name: /next/i });
-    expect(nextButton).toBeInTheDocument();
+    expect(nextButton).toBeVisible();
   });
 
   // First question is mandatory question
   it("renders error message when press next button without filling in mandatory question 1", async () => {
     render(<App />);
     const startButton = screen.getByRole("button", { name: /start/i });
-    expect(startButton).toBeInTheDocument();
+    expect(startButton).toBeVisible();
     act(() => {
       fireEvent.click(startButton);
     });
@@ -55,14 +55,14 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const errorMessage = await screen.findByText(MANDATORY_QUESTION_REMINDER);
-    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toBeVisible();
     expect(errorMessage).toHaveClass("error_text");
   });
 
   it("can select from dropdown on question 1", () => {
     render(<App />);
     const startButton = screen.getByRole("button", { name: /start/i });
-    expect(startButton).toBeInTheDocument();
+    expect(startButton).toBeVisible();
     act(() => {
       fireEvent.click(startButton);
     });
@@ -97,7 +97,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_TWO);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("can move back when press previous button to see question 1", async () => {
@@ -124,7 +124,7 @@ describe("Questionnaire App Frontend", () => {
     });
 
     const question = await screen.findByText(QUESTION_ONE);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("can move back when press previous button and see previous stored answer for question 1", async () => {
@@ -152,7 +152,7 @@ describe("Questionnaire App Frontend", () => {
     });
 
     const question = await screen.findByText(QUESTION_ONE);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
     dropdown = screen.getAllByRole("button")[0];
     expect(dropdown).toHaveClass("MuiSelect-select");
     expect(dropdown).toHaveTextContent("Heart disease");
@@ -224,7 +224,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_THREE);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("will see error message when press next button without filling in mandatory checkbox question 2", async () => {
@@ -251,7 +251,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const errorMessage = await screen.findByText(MANDATORY_QUESTION_REMINDER);
-    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toBeVisible();
     expect(errorMessage).toHaveClass("error_text");
   });
 
@@ -290,7 +290,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_FOUR);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("displays error message if not fill in mandatory question 3 and press next button", async () => {
@@ -325,7 +325,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const errorMessage = await screen.findByText(MANDATORY_QUESTION_REMINDER);
-    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toBeVisible();
     expect(errorMessage).toHaveClass("error_text");
   });
 
@@ -367,7 +367,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_FIVE);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("can display question 5 when press next button after filling in optional dropdown question 4", async () => {
@@ -417,7 +417,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_FIVE);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("can skip question 5 when press next button without filling in optional dropdown question 4 and 5 and see question 6", async () => {
@@ -462,7 +462,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_SIX);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("can display question 6 when press next button after filling in optional dropdown question 5", async () => {
@@ -520,7 +520,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const question = await screen.findByText(QUESTION_SIX);
-    expect(question).toBeInTheDocument();
+    expect(question).toBeVisible();
   });
 
   it("can skip question 6 when press next button without filling in optional dropdown question 4 and 5 and see last page", async () => {
@@ -569,7 +569,7 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(nextButton);
     });
     const endingMsg = await screen.findByText(ENDING_MSG);
-    expect(endingMsg).toBeInTheDocument();
+    expect(endingMsg).toBeVisible();
   });
 
   it("should be able to submit and also see a submission result modal", async () => {
@@ -622,6 +622,6 @@ describe("Questionnaire App Frontend", () => {
       fireEvent.click(submitButton);
     });
     const dialog = await screen.findByRole("dialog");
-    expect(dialog).toBeInTheDocument();
+    expect(dialog).toBeVisible();
   });
 });
